@@ -1,22 +1,19 @@
 ---
-## Author
 author:
-  name: Дмитрий Сергеевич Кулябов
-  degrees: DSc
-  orcid: 0000-0002-0877-7063
-  email: kulyabov-ds@rudn.ru
+  name: Воинов Кирилл Викторович
+  degrees: student
+  email: 1132236017@rudn.ru
   affiliation:
     - name: Российский университет дружбы народов
       country: Российская Федерация
       postal-code: 117198
       city: Москва
       address: ул. Миклухо-Маклая, д. 6
-## Title
-title: Структура научной презентации
-subtitle: Простейший вариант
+title: "Имитационное моделирование"
+subtitle: "Лабораторная работа №3. Агентное моделирование: модель Daisyworld"
 license: CC BY
 date: today
-date-format: "YYYY-MM-DD" # Example: 2025-09-06
+date-format: "YYYY-MM-DD"
 ---
 
 # Информация
@@ -26,175 +23,249 @@ date-format: "YYYY-MM-DD" # Example: 2025-09-06
 :::::::::::::: {.columns align=center}
 ::: {.column width="70%"}
 
-  * Кулябов Дмитрий Сергеевич
-  * д.ф.-м.н., профессор
-  * профессор кафедры теории вероятностей и кибербезопасности
-  * Российский университет дружбы народов им. П. Лумумбы
-  * [kulyabov-ds@rudn.ru](mailto:kulyabov-ds@rudn.ru)
-  * <https://yamadharma.github.io/ru/>
+  * Воинов Кирилл Викторович
+  * Студент
+  * Российский университет дружбы народов
+  * [1132236017@rudn.ru](mailto:1132236017@rudn.ru)
 
 :::
 ::: {.column width="30%"}
 
-![](./image/kulyabov.jpg)
-
 :::
 ::::::::::::::
 
-# Вводная часть
+# Цель и задачи
 
-## Актуальность
+## Цель работы
 
-- Важно донести результаты своих исследований до окружающих
-- Научная презентация --- рабочий инструмент исследователя
-- Необходимо создавать презентацию быстро
-- Желательна минимизация усилий для создания презентации
+- Изучить принципы агентного моделирования (ABM)
+- Реализовать модель Daisyworld с помощью Agents.jl
+- Исследовать механизмы саморегуляции климата
+- Применить литературное программирование (Literate.jl)
 
-## Объект и предмет исследования
+# Теоретическое введение
 
-- Презентация как текст
-- Программное обеспечение для создания презентаций
-- Входные и выходные форматы презентаций
+## Агентное моделирование (ABM)
 
-## Цели и задачи
+- **Агент** --- автономная сущность с правилами поведения
+- **Среда** --- пространство взаимодействия (сетка $30 \times 30$)
+- **Эмерджентность** --- глобальное поведение из локальных правил
+- **Гетерогенность** --- агенты различаются по свойствам
+- Инструмент: фреймворк **Agents.jl** для Julia
 
-- Создать шаблон презентации в Markdown
-- Описать алгоритм создания выходных форматов презентаций
+## Модель Daisyworld
 
-## Материалы и методы
+- Предложена Лавлоком и Уотсоном (1983), гипотеза Геи
+- Два вида маргариток: чёрные ($\alpha = 0.25$) и белые ($\alpha = 0.75$)
+- Формула нагрева: $T = 72 \ln((1-\alpha) \cdot L) + 80$
+- Порог размножения: $p = 0.1457T - 0.0032T^2 - 0.6443$
 
-- Процессор `pandoc` для входного формата Markdown
-- Результирующие форматы
-	- `pdf`
-	- `html`
-- Автоматизация процесса создания: `Makefile`
+# Настройка окружения
 
-# Создание презентации
+## Запуск Julia
 
-## Процессор `pandoc`
+Запуск Julia REPL
 
-- Pandoc: преобразователь текстовых файлов
-- Сайт: <https://pandoc.org/>
-- Репозиторий: <https://github.com/jgm/pandoc>
+![](../report/image/1.png){width=60%}
 
-## Формат `pdf`
+## Подключение пакета и создание проекта DrWatson
 
-- Использование LaTeX
-- Пакет для презентации: [beamer](https://ctan.org/pkg/beamer)
-- Тема оформления: `metropolis`
+Загрузка DrWatson и инициализация проекта
 
-## Код для формата `pdf`
+![](../report/image/2.png){width=60%}
 
-```yaml
-slide_level: 2
-aspectratio: 169
-section-titles: true
-theme: metropolis
-```
+## Активация проекта и добавление Julia-пакетов
 
-## Формат `html`
+Активация окружения проекта и установка пакетов
 
-- Используется фреймворк [reveal.js](https://revealjs.com/)
-- Используется [тема](https://revealjs.com/themes/) `beige`
+![](../report/image/3.png){width=60%}
 
-## Код для формата `html`
+# Базовая визуализация daisyworld.jl
 
-- Тема задаётся в файле `Makefile`
+## Тепловая карта: шаг 0
 
-```make
-REVEALJS_THEME = beige
-```
+Начальное состояние: 20% чёрных + 20% белых
+
+![](../report/image/daisy_step001.png){width=50%}
+
+## Тепловая карта: шаг 5
+
+Маргаритки образуют кластеры
+
+![](../report/image/daisy_step005.png){width=50%}
+
+## Тепловая карта: шаг 40
+
+Динамическое равновесие
+
+![](../report/image/daisy_step040.png){width=50%}
+
+# Анимация daisyworld-animate.jl
+
+Ссылка на анимацию: https://rutube.ru/video/private/a9933af0a04e056930d5a70be958d1a2/?p=qlgRnLzXVoS4V8aYXO_xQg 
+
+# Динамика числа маргариток daisyworld-count.jl
+
+## График динамики числа маргариток
+
+Колебания: чёрные и белые конкурируют
+
+![](../report/image/daisy_count.png){width=55%}
+
+# Полная динамика (ramp) daisyworld-luminosity.jl
+
+## Трёхпанельный график динамики
+
+Численность, температура, светимость
+
+![](../report/image/daisy_luminosity.png){width=45%}
+
+# Визуализация с параметрами daisyworld\_\_param.jl
+
+## init\_white=0.2, max\_age=25: шаг 1
+
+Начальное состояние: равные доли чёрных и белых
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.2_max_age=25_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step01.png){width=45%}
+
+## init\_white=0.2, max\_age=25: шаг 4
+
+Маргаритки начинают образовывать кластеры
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.2_max_age=25_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step04.png){width=45%}
+
+## init\_white=0.2, max\_age=25: шаг 40
+
+Базовый случай: равномерное распределение обоих видов
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.2_max_age=25_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step40.png){width=45%}
+
+## init\_white=0.2, max\_age=40: шаг 1
+
+Начальное состояние (увеличенный возраст)
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.2_max_age=40_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step01.png){width=45%}
+
+## init\_white=0.2, max\_age=40: шаг 4
+
+Кластеры формируются быстрее
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.2_max_age=40_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step04.png){width=45%}
+
+## init\_white=0.2, max\_age=40: шаг 40
+
+Более плотное заполнение: маргаритки живут дольше
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.2_max_age=40_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step40.png){width=45%}
+
+## init\_white=0.8, max\_age=25: шаг 1
+
+80% белых маргариток --- поверхность охлаждена
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.8_max_age=25_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step01.png){width=45%}
+
+## init\_white=0.8, max\_age=25: шаг 4
+
+Чёрные маргаритки начинают вытеснять белых
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.8_max_age=25_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step04.png){width=45%}
+
+## init\_white=0.8, max\_age=25: шаг 40
+
+Несмотря на 80% белых вначале, равновесие то же
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.8_max_age=25_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step40.png){width=45%}
+
+## init\_white=0.8, max\_age=40: шаг 1
+
+Почти вся решётка --- белые маргаритки
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.8_max_age=40_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step01.png){width=45%}
+
+## init\_white=0.8, max\_age=40: шаг 4
+
+Белые дольше преобладают из-за длинного жизненного цикла
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.8_max_age=40_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step04.png){width=45%}
+
+## init\_white=0.8, max\_age=40: шаг 40
+
+Самая медленная динамика перехода к равновесию
+
+![](../report/image/daisyworld_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.8_max_age=40_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4_step40.png){width=45%}
+
+# Динамика с параметрами daisyworld-count\_\_param.jl
+
+## init\_white=0.2, max\_age=25: динамика
+
+Быстрые колебания, быстрое равновесие
+
+![](../report/image/daisy-count_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.2_max_age=25_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4.png){width=50%}
+
+## init\_white=0.2, max\_age=40: динамика
+
+Более плавная динамика
+
+![](../report/image/daisy-count_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.2_max_age=40_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4.png){width=50%}
+
+## init\_white=0.8, max\_age=25: динамика
+
+Белые стартуют с 80%, но равновесие то же
+
+![](../report/image/daisy-count_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.8_max_age=25_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4.png){width=50%}
+
+## init\_white=0.8, max\_age=40: динамика
+
+Самый медленный переход к равновесию
+
+![](../report/image/daisy-count_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.8_max_age=40_scenario=default_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4.png){width=50%}
+
+# Полная динамика с параметрами (ramp) daisyworld-luminosity\_\_param.jl
+ 
+## init\_white=0.2, max\_age=25 (ramp)
+
+Быстрая адаптация к изменениям светимости
+
+![](../report/image/daisy-luminosity_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.2_max_age=25_scenario=ramp_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4.png){width=45%}
+
+## init\_white=0.2, max\_age=40 (ramp)
+
+Замедленная реакция, большая инерционность
+
+![](../report/image/daisy-luminosity_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.2_max_age=40_scenario=ramp_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4.png){width=45%}
+
+## init\_white=0.8, max\_age=25 (ramp)
+
+Быстро забывает начальные условия
+
+![](../report/image/daisy-luminosity_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.8_max_age=25_scenario=ramp_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4.png){width=45%}
+
+## init\_white=0.8, max\_age=40 (ramp)
+
+Наиболее инерционная динамика
+
+![](../report/image/daisy-luminosity_albedo_black=0.25_albedo_white=0.75_init_black=0.2_init_white=0.8_max_age=40_scenario=ramp_seed=165_solar_change=0.005_solar_luminosity=1.0_surface_albedo=0.4.png){width=45%}
+
+
+# Литературное программирование
+
+Генерация производные форматов 
+
+![](../report/image/5.png){width=60%}
+
+
+# Выполнение **Jupyter notebook** 
+
+![](../report/image/6.png){width=60%}
+
 # Результаты
 
-## Получающиеся форматы
+## Выводы
 
-- Полученный `pdf`-файл можно демонстрировать в любой программе просмотра `pdf`
-- Полученный `html`-файл содержит в себе все ресурсы: изображения, css, скрипты
+- Реализована модель Daisyworld на Julia (Agents.jl)
+- Модель демонстрирует **эмерджентную саморегуляцию**
+- `init_white`: влияет на переходную фазу, не на равновесие
+- `max_age`: увеличивает плотность и инерционность
+- Сценарий ramp: маргаритки компенсируют изменения
+- 6 скриптов, 18 производных файлов (Literate.jl)
 
-# Элементы презентации
-
-## Актуальность
-
-- Даёт понять, о чём пойдёт речь
-- Следует широко и кратко описать проблему
-- Мотивировать свое исследование
-- Сформулировать цели и задачи
-- Возможна формулировка ожидаемых результатов
-
-## Цели и задачи
-
-- Не формулируйте более 1--2 целей исследования
-
-## Материалы и методы
-
-- Представляйте данные качественно
-- Количественно, только если крайне необходимо
-- Излишние детали не нужны
-
-## Содержание исследования
-
-- Предлагаемое решение задач исследования с обоснованием
-- Основные этапы работы
-
-## Результаты
-
-- Не нужны все результаты
-- Необходимы логические связки между слайдами
-- Необходимо показать понимание материала
-
-
-## Итоговый слайд
-
-- Запоминается последняя фраза. © Штирлиц
-- Главное сообщение, которое вы хотите донести до слушателей
-- Избегайте использовать последний слайд вида *Спасибо за внимание*
-
-# Рекомендую
-
-## Принцип 10/20/30
-
-  - 10 слайдов
-  - 20 минут на доклад
-  - 30 кегль шрифта
-
-## Связь слайдов
-
-::: incremental
-
-- Один слайд --- одна мысль
-- Нельзя ссылаться на объекты, находящиеся на предыдущих слайдах (например, на формулы)
-- Каждый слайд должен иметь заголовок
-
-:::
-
-## Количество сущностей
-
-::: incremental
-
-- Человек может одновременно помнить $7 \pm 2$ элемента
-- При размещении информации на слайде старайтесь чтобы в сумме слайд содержал не более 5 элементов
-- Можно группировать элементы так, чтобы визуально было не более 5 групп
-
-:::
-
-## Общие рекомендации
-
-::: incremental
-
-- На слайд выносится та информация, которая без зрительной опоры воспринимается хуже
-- Слайды должны дополнять или обобщать содержание выступления или его частей, а не дублировать его
-- Информация на слайдах должна быть изложена кратко, чётко и хорошо структурирована
-- Слайд не должен быть перегружен графическими изображениями и текстом
-- Не злоупотребляйте анимацией и переходами
-
-:::
-
-## Представление данных
-
-::: incremental
-
-- Лучше представить в виде схемы
-- Менее оптимально представить в виде рисунка, графика, таблицы
-- Текст используется, если все предыдущие способы отображения информации не подошли
-
-:::
